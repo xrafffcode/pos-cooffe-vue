@@ -32,7 +32,7 @@ const logout = () => {
             <a class="nav-link" href="#" @click="logout">Logout</a>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" to="/transaksi">Transaksi</RouterLink>
+            <RouterLink class="nav-link" to="/admin/transaksi">Transaksi</RouterLink>
           </li>
         </ul>
       </div>

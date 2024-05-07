@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import('@/views/home.vue')
     },
     {
+      path: '/orders',
+      name: 'orders',
+      component: () => import('@/views/orders.vue'),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/login.vue')
@@ -23,11 +28,6 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !token) {
     next({ name: 'login' })
-    return
-  }
-
-  if (!to.meta.requiresAuth && token) {
-    next({ name: 'admin' })
     return
   }
 

@@ -14,7 +14,12 @@ const fetchFoods = async () => {
 }
 
 const fetchOrders = async () => {
-  const response = await axios.get('http://localhost:8000/api/semuaorder')
+  const response = await axios.get('http://localhost:8000/api/order', {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+  
   orders.value = response.data.data
 }
 

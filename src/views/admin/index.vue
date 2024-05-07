@@ -51,7 +51,7 @@ const handleDelete = async (id) => {
           <td>{{ food.price }}</td>
           <td><img :src="'http://localhost:8000/uploads/' + food.image" alt="" style="width: 100px;"></td>
           <td>
-            <button @click="handleDelete(food.id)" class="btn btn-danger">Delete</button>
+            <button @click="handleDelete(food.id_food)" class="btn btn-danger">Delete</button>
           </td>
         </tr>
       </tbody>
