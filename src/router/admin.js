@@ -1,0 +1,20 @@
+const adminRoutes = [
+    {
+        path: '/admin',
+        name: 'admin',
+        component: () => import('@/views/admin/index.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/admin/tambah-makanan',
+        name: 'add-food',
+        component: () => import('@/views/admin/add-food.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+]
+
+export default adminRoutes
