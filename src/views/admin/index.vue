@@ -23,10 +23,10 @@ const handleDelete = async (id) => {
         'Authorization': `Bearer ${token}`
       }
     })
-
     fetchFoods()
   }
 }
+
 </script>
 
 <template>

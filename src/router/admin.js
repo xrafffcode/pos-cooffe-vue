@@ -15,6 +15,14 @@ const adminRoutes = [
             requiresAuth: true
         }
     },
+    {
+        path: '/admin/transaksi',
+        name: 'transaksi',
+        component: () => import('@/views/admin/transaksi.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
 ]
 
 export default adminRoutes
