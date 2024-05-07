@@ -51,13 +51,11 @@ const removeFromCart = (id_food) => {
     localStorage.setItem('basket', JSON.stringify(basket.value));
 }
 
-onMounted(() => {
-    fetchFoods();
-});
+fetchFoods();
 </script>
 
 <template>
-    <div class="row">
+    <div class="row" v-if="!loading">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
