@@ -15,6 +15,15 @@ const adminRoutes = [
             requiresAuth: true
         }
     },
+   
+    {
+        path: '/admin/edit-makanan/:id',
+        name: 'edit-makanan',
+        component: () => import('@/views/admin/edit-food.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
     {
         path: '/admin/transaksi',
         name: 'transaksi',

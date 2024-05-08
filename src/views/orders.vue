@@ -8,6 +8,10 @@ const uploadUrl = "http://localhost:8000/uploads/";
 const foods = ref([]);
 const loading = ref(false);
 const basket = ref([]);
+const customer = ref({
+  name: "",
+  order_type: ""
+});
 
 const fetchFoods = async () => {
   loading.value = true;
@@ -51,6 +55,33 @@ const removeFromCart = (id_food) => {
   localStorage.setItem("basket", JSON.stringify(basket.value));
 };
 
+
+const handleOrder = async () => {
+  const order_detail = basket.value.map((item) => {
+    const food = foods.value.find((food) => food.id_food === item.id_food);
+    return {
+      id_food: item.id_food,
+      price: food.price,
+      quantity: item.quantity,
+    };
+  });
+
+  const data = {
+    name: customer.value.name,
+    order_type: customer.value.order_type,
+    order_detail,
+  };
+
+  try {
+    await axios.post("http://localhost:8000/api/order", data);
+    alert("Order success");
+    localStorage.removeItem("basket");
+    basket.value = [];
+  } catch (error) {
+    alert("Order failed");
+  }
+};
+
 fetchFoods();
 </script>
 
@@ -74,52 +105,42 @@ fetchFoods();
             <tbody>
               <tr v-for="item in foods" :key="item.id_food">
                 <td>
-                  <img
-                    :src="uploadUrl + item.image"
-                    alt=""
-                    style="width: 100px"
-                  />
+                  <img :src="uploadUrl + item.image" alt="" style="width: 100px" />
                 </td>
                 <td>{{ item.name }}</td>
                 <td>
                   {{
-                    item.price.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })
-                  }}
+    item.price.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    })
+  }}
                 </td>
                 <td>
                   {{
-                    basket.find(
-                      (basketItem) => basketItem.id_food === item.id_food
-                    )?.quantity
-                  }}
+      basket.find(
+        (basketItem) => basketItem.id_food === item.id_food
+      )?.quantity
+    }}
                 </td>
                 <td>
                   {{
-                    (
-                      item.price *
-                      basket.find(
-                        (basketItem) => basketItem.id_food === item.id_food
-                      )?.quantity
-                    ).toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })
-                  }}
+      (
+        item.price *
+        basket.find(
+          (basketItem) => basketItem.id_food === item.id_food
+        )?.quantity
+      ).toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      })
+    }}
                 </td>
                 <td>
-                  <button
-                    @click="addToCart(item.id_food)"
-                    class="btn btn-primary me-2"
-                  >
+                  <button @click="addToCart(item.id_food)" class="btn btn-primary me-2">
                     +
                   </button>
-                  <button
-                    @click="removeFromCart(item.id_food)"
-                    class="btn btn-danger"
-                  >
+                  <button @click="removeFromCart(item.id_food)" class="btn btn-danger">
                     -
                   </button>
                 </td>
@@ -130,18 +151,18 @@ fetchFoods();
                 <td colspan="4">Total</td>
                 <td>
                   {{
-                    basket
-                      .reduce((acc, item) => {
-                        const food = foods.find(
-                          (food) => food.id_food === item.id_food
-                        );
-                        return acc + food.price * item.quantity;
-                      }, 0)
-                      .toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })
-                  }}
+    basket
+      .reduce((acc, item) => {
+        const food = foods.find(
+          (food) => food.id_food === item.id_food
+        );
+        return acc + food.price * item.quantity;
+      }, 0)
+      .toLocaleString("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      })
+  }}
                 </td>
                 <td></td>
               </tr>
@@ -154,38 +175,39 @@ fetchFoods();
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Customer Information</h5>
-          <form @submit.prevent="submitForm">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" v-model="customer.name" required />
-            </div>
-            <div class="form-group">
-              <label for="table_number">Table Number</label>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" v-model="customer.name" />
+          </div>
+          <div class="mb-3">
+            <label for="table_number" class="form-label">Order Type</label>
+            <div class="form-check">
               <input
-                type="number"
-                id="table_number"
-                v-model="customer.table_number"
-                required
+                class="form-check-input"
+                type="radio"
+                name="order_type"
+                id="dine_in"
+                value="Dine In"
+                v-model="customer.order_type"
               />
+              <label class="form-check-label" for="dine_in">
+                Dine In
+              </label>
             </div>
-            <div class="form-group">
-              <label for="order_date">Order Date</label>
+            <div class="form-check">
               <input
-                type="date"
-                id="order_date"
-                v-model="customer.order_date"
-                required
+                class="form-check-input"
+                type="radio"
+                name="order_type"
+                id="take_away"
+                value="Take Away"
+                v-model="customer.order_type"
               />
+              <label class="form-check-label" for="take_away">
+                Take Away
+              </label>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Submit</button>
-          </form>
-          <button class="btn btn-primary w-100">Checkout</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
+          </div>
           <h5 class="card-title">Order Summary</h5>
           <table class="table">
             <tbody>
@@ -199,23 +221,25 @@ fetchFoods();
                 <td>Total Price</td>
                 <td>
                   {{
-                    basket
-                      .reduce((acc, item) => {
-                        const food = foods.find(
-                          (food) => food.id_food === item.id_food
-                        );
-                        return acc + food.price * item.quantity;
-                      }, 0)
-                      .toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      })
+    basket
+      .reduce((acc, item) => {
+                  const food = foods.find(
+                  (food) => food.id_food === item.id_food
+                  );
+                  return acc + food.price * item.quantity;
+                  }, 0)
+                  .toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  })
                   }}
                 </td>
               </tr>
             </tbody>
           </table>
-          <button class="btn btn-primary w-100">Checkout</button>
+          <button class="btn btn-primary w-100" @click="handleOrder">
+            Order Now
+          </button>
         </div>
       </div>
     </div>
